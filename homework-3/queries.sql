@@ -24,7 +24,11 @@ ORDER BY 1 DESC, 2 DESC;
 
 
 -- 3. Список компаний заказчиков (company_name из табл customers), не сделавших ни одного заказа
-
+SELECT company_name
+FROM customers
+LEFT JOIN orders USING(customer_id)
+WHERE order_id IS NULL
+ORDER BY company_name;
 
 -- 4. уникальные названия продуктов, которых заказано ровно 10 единиц (количество заказанных единиц см в колонке quantity табл order_details)
 -- Этот запрос написать именно с использованием подзапроса.
