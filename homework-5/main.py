@@ -31,9 +31,9 @@ def main():
                 print("Данные в suppliers успешно добавлены")
 
                 add_foreign_keys(cur, json_file)
-                print(f"FOREIGN KEY успешно добавлены")
+                print("FOREIGN KEY успешно добавлены")
 
-    except(Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg2.DatabaseError) as error:
         print(error)
     finally:
         if conn is not None:
@@ -108,11 +108,24 @@ def insert_suppliers_data(cur, suppliers: list[dict]) -> None:
     """, data)
 
 
-def add_foreign_keys(cur) -> None:
+def add_foreign_keys(cur, json_file) -> None:
     """Добавляет foreign key со ссылкой на supplier_id в таблицу products."""
 
     cur.execute("ALTER TABLE products ADD COLUMN supplier_id INTEGER")
     cur.execute("ALTER TABLE products ADD FOREIGN KEY(supplier_id) REFERENCES suppliers(supplier_id)")
+    with open(json_file, encoding="UTF-8") as file:
+        suppliers_data = json.load(file)
+        for supplier in suppliers_data:
+            if supplier["products"]:
+                for product in supplier["products"]:
+                    cur.execute("""
+                        UPDATE products SET supplier_id = (
+                            SELECT supplier_id
+                            FROM suppliers
+                            WHERE %s = ANY(suppliers.products)
+                            )
+                        WHERE product_name = %s
+                        """, (product, product, ))
 
 
 if __name__ == '__main__':
