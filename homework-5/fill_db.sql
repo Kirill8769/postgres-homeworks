@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS shippers;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS region;
 DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS suppliers;
 
 --
 -- Name: categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
